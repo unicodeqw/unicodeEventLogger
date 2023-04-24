@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Logger</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+</head>
+
+<body>
+    <div class="container" id="eventlogger">
+        <div class="event-logger-bg">
+            <div class="event-logger-logo">
+                <svg class="event-logger-logo-img" width="26" height="30" viewBox="0 0 26 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_1_32)">
+                        <path
+                            d="M7 12H19C20.6569 12 22 10.6569 22 9C22 7.34315 20.6569 6 19 6C18.36 6 17.826 5.53873 17.5639 4.95481C16.7822 3.21307 15.0328 2 13 2C10.9672 2 9.21776 3.21307 8.43606 4.95481C8.17399 5.53873 7.64004 6 7 6C5.34315 6 4 7.34315 4 9C4 10.6569 5.34315 12 7 12Z"
+                            fill="white" fill-opacity="0.76" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M11.2352 14L10.7729 14.786C9.98586 16.124 9.59233 16.793 9.88032 17.2965C10.1683 17.8 10.9454 17.8 12.4996 17.8C12.7355 17.8 12.8535 17.8 12.9267 17.8732C13 17.9464 13 18.0643 13 18.3V20.1638C13 20.9032 13 21.2729 13.1843 21.3231C13.3686 21.3733 13.556 21.0547 13.9309 20.4174L15.227 18.214C16.014 16.876 16.4076 16.207 16.1196 15.7035C15.8316 15.2 15.0545 15.2 13.5003 15.2C13.2644 15.2 13.1464 15.2 13.0732 15.1268C13 15.0536 13 14.9357 13 14.7V14H11.2352Z"
+                            fill="white" fill-opacity="0.76" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_1_32" x="-3" y="0" width="32" height="32" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_32" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_32" result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+                <span class="event-logger-logo-text">Event Logger</span>
+            </div>
+            <div class="events-box" v-bind:style="{ 'max-height': 200, 'overflow-y': 'auto' }">
+                <li class="event-logger-eventslist" v-for="(event, index) in logged_events">
+                    <div class="event-logger-event-bg">
+                        <svg class="event-logger-event-logo" width="28" height="27" viewBox="0 0 28 27" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g filter="url(#filter0_d_1_28)">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M10.2899 10C11.1504 7.10851 13.829 5 17 5C20.866 5 24 8.13401 24 12C24 15.866 20.866 19 17 19H8.5C6.01472 19 4 16.9853 4 14.5C4 12.0147 6.01472 10 8.5 10H10.2899Z"
+                                    fill="white" fill-opacity="0.75" />
+                            </g>
+                            <defs>
+                                <filter id="filter0_d_1_28" x="-2" y="0" width="32" height="32"
+                                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix"
+                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset dy="4" />
+                                    <feGaussianBlur stdDeviation="2" />
+                                    <feComposite in2="hardAlpha" operator="out" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_28" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_28"
+                                        result="shape" />
+                                </filter>
+                            </defs>
+                        </svg>
+                        <span class="event-logger-event-text">callRemote('{{event.name}}'{{event.args.length > 0 ? ',' : ''}}
+                            {{addQuotes(event.args).join(', ')}})</span>
+                        <div @click="pinEvent(event)" class="event-btn-bg">
+                            <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_16)">
+                                    <path
+                                        d="M11.139 2.54623C11.6267 2.22106 11.8706 2.05847 12.1336 2.03941C12.2476 2.03115 12.3622 2.0425 12.4724 2.07295C12.7266 2.14322 12.9338 2.35048 13.3483 2.765L14.235 3.65166C14.6495 4.06619 14.8568 4.27345 14.927 4.52762C14.9575 4.63778 14.9688 4.75235 14.9606 4.86635C14.9415 5.12937 14.7789 5.37325 14.4538 5.86102L13.7577 6.90505C13.2024 7.73805 12.8156 8.67179 12.6193 9.6535L12.5079 10.2106C12.4254 10.6231 11.9474 10.8162 11.6015 10.5767C9.57821 9.17594 7.82406 7.42179 6.4233 5.39846C6.18385 5.05259 6.37694 4.57461 6.78944 4.49211L7.3465 4.3807C8.32821 4.18436 9.26195 3.79759 10.095 3.24225L11.139 2.54623Z"
+                                        fill="white" fill-opacity="0.89" stroke="white" stroke-opacity="0.89"
+                                        stroke-width="2" />
+                                    <path d="M5.91667 11.0833L8.54167 8.45834" stroke="white" stroke-opacity="0.89"
+                                        stroke-width="2" stroke-linecap="round" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_16" x="-1" y="0" width="22" height="22"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_16" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_16"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div @click="emulateEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="25" viewBox="0 0 22 25" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_20)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M9.10601 10.4798L8.35876 10.2307C6.00555 9.44631 4.82895 9.05411 4.82895 8.33335C4.82895 7.61259 6.00555 7.22039 8.35877 6.43598L13.8719 4.59826C15.5277 4.04633 16.3556 3.77036 16.7926 4.20738C17.2297 4.6444 16.9537 5.47229 16.4018 7.12808L14.564 12.6413C13.7796 14.9945 13.3874 16.1711 12.6667 16.1711C11.9459 16.1711 11.5537 14.9945 10.7693 12.6412L10.5202 11.894L14.2071 8.20712C14.5976 7.8166 14.5976 7.18343 14.2071 6.79291C13.8166 6.40238 13.1834 6.40238 12.7929 6.79291L9.10601 10.4798Z"
+                                        fill="white" fill-opacity="0.92" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_20" x="-3" y="0" width="28" height="28"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_20" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_20"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div @click="copyEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_24)">
+                                    <path
+                                        d="M9.66667 10.6667H7.66667C6.19391 10.6667 5 9.47277 5 8.00001V8.00001C5 6.52725 6.19391 5.33334 7.66667 5.33334H9.66667"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M13.6667 8H8.33333" stroke="white" stroke-opacity="0.89" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M12.3333 10.6667H14.3333C15.8061 10.6667 17 9.47277 17 8.00001V8.00001C17 6.52725 15.8061 5.33334 14.3333 5.33334H12.3333"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_24" x="-1" y="0" width="24" height="24"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_24" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_24"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div @click="blockEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="24" viewBox="0 0 22 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_6_234)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M11 15.75C14.7279 15.75 17.75 12.7279 17.75 9C17.75 5.27208 14.7279 2.25 11 2.25C7.27208 2.25 4.25 5.27208 4.25 9C4.25 12.7279 7.27208 15.75 11 15.75ZM7.25 10H14.75V8H7.25V10Z"
+                                        fill="white" fill-opacity="0.88" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_6_234" x="-2" y="0" width="26" height="26"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_6_234" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6_234"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                    </div>
+                </li>
+            </div>
+        </div>
+
+        <div class="saved-events-bg">
+            <div class="event-logger-logo">
+                <svg class="event-logger-logo-img" width="26" height="30" viewBox="0 0 26 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_1_32)">
+                        <path
+                            d="M7 12H19C20.6569 12 22 10.6569 22 9C22 7.34315 20.6569 6 19 6C18.36 6 17.826 5.53873 17.5639 4.95481C16.7822 3.21307 15.0328 2 13 2C10.9672 2 9.21776 3.21307 8.43606 4.95481C8.17399 5.53873 7.64004 6 7 6C5.34315 6 4 7.34315 4 9C4 10.6569 5.34315 12 7 12Z"
+                            fill="white" fill-opacity="0.76" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M11.2352 14L10.7729 14.786C9.98586 16.124 9.59233 16.793 9.88032 17.2965C10.1683 17.8 10.9454 17.8 12.4996 17.8C12.7355 17.8 12.8535 17.8 12.9267 17.8732C13 17.9464 13 18.0643 13 18.3V20.1638C13 20.9032 13 21.2729 13.1843 21.3231C13.3686 21.3733 13.556 21.0547 13.9309 20.4174L15.227 18.214C16.014 16.876 16.4076 16.207 16.1196 15.7035C15.8316 15.2 15.0545 15.2 13.5003 15.2C13.2644 15.2 13.1464 15.2 13.0732 15.1268C13 15.0536 13 14.9357 13 14.7V14H11.2352Z"
+                            fill="white" fill-opacity="0.76" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_1_32" x="-3" y="0" width="32" height="32" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_32" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_32" result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+                <span class="event-logger-logo-text">Saved Events</span>
+            </div>
+            <div class="events-box" v-bind:style="{ 'max-height': 200, 'overflow-y': 'auto' }">
+                <li class="event-logger-eventslist" v-for="(event, index) in saved_events">
+                    <div class="event-logger-event-bg">
+                        <svg class="event-logger-event-logo" width="28" height="27" viewBox="0 0 28 27" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g filter="url(#filter0_d_1_28)">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M10.2899 10C11.1504 7.10851 13.829 5 17 5C20.866 5 24 8.13401 24 12C24 15.866 20.866 19 17 19H8.5C6.01472 19 4 16.9853 4 14.5C4 12.0147 6.01472 10 8.5 10H10.2899Z"
+                                    fill="white" fill-opacity="0.75" />
+                            </g>
+                            <defs>
+                                <filter id="filter0_d_1_28" x="-2" y="0" width="32" height="32"
+                                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix"
+                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset dy="4" />
+                                    <feGaussianBlur stdDeviation="2" />
+                                    <feComposite in2="hardAlpha" operator="out" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_28" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_28"
+                                        result="shape" />
+                                </filter>
+                            </defs>
+                        </svg>
+                        <span class="event-logger-event-text">callRemote('{{event.name}}'{{event.args.length > 0 ? ',' : ''}}
+                            {{addQuotes(event.args).join(', ')}})</span>
+                        <div @click="pinEvent(event)" class="event-btn-bg">
+                            <svg width="20" height="21" viewBox="0 0 20 21" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_16)">
+                                    <path
+                                        d="M11.139 2.54623C11.6267 2.22106 11.8706 2.05847 12.1336 2.03941C12.2476 2.03115 12.3622 2.0425 12.4724 2.07295C12.7266 2.14322 12.9338 2.35048 13.3483 2.765L14.235 3.65166C14.6495 4.06619 14.8568 4.27345 14.927 4.52762C14.9575 4.63778 14.9688 4.75235 14.9606 4.86635C14.9415 5.12937 14.7789 5.37325 14.4538 5.86102L13.7577 6.90505C13.2024 7.73805 12.8156 8.67179 12.6193 9.6535L12.5079 10.2106C12.4254 10.6231 11.9474 10.8162 11.6015 10.5767C9.57821 9.17594 7.82406 7.42179 6.4233 5.39846C6.18385 5.05259 6.37694 4.57461 6.78944 4.49211L7.3465 4.3807C8.32821 4.18436 9.26195 3.79759 10.095 3.24225L11.139 2.54623Z"
+                                        fill="white" fill-opacity="0.89" stroke="white" stroke-opacity="0.89"
+                                        stroke-width="2" />
+                                    <path d="M5.91667 11.0833L8.54167 8.45834" stroke="white" stroke-opacity="0.89"
+                                        stroke-width="2" stroke-linecap="round" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_16" x="-1" y="0" width="22" height="22"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_16" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_16"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div @click="emulateEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="25" viewBox="0 0 22 25" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_20)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M9.10601 10.4798L8.35876 10.2307C6.00555 9.44631 4.82895 9.05411 4.82895 8.33335C4.82895 7.61259 6.00555 7.22039 8.35877 6.43598L13.8719 4.59826C15.5277 4.04633 16.3556 3.77036 16.7926 4.20738C17.2297 4.6444 16.9537 5.47229 16.4018 7.12808L14.564 12.6413C13.7796 14.9945 13.3874 16.1711 12.6667 16.1711C11.9459 16.1711 11.5537 14.9945 10.7693 12.6412L10.5202 11.894L14.2071 8.20712C14.5976 7.8166 14.5976 7.18343 14.2071 6.79291C13.8166 6.40238 13.1834 6.40238 12.7929 6.79291L9.10601 10.4798Z"
+                                        fill="white" fill-opacity="0.92" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_20" x="-3" y="0" width="28" height="28"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_20" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_20"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                        <div @click="copyEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_24)">
+                                    <path
+                                        d="M9.66667 10.6667H7.66667C6.19391 10.6667 5 9.47277 5 8.00001V8.00001C5 6.52725 6.19391 5.33334 7.66667 5.33334H9.66667"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M13.6667 8H8.33333" stroke="white" stroke-opacity="0.89" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M12.3333 10.6667H14.3333C15.8061 10.6667 17 9.47277 17 8.00001V8.00001C17 6.52725 15.8061 5.33334 14.3333 5.33334H12.3333"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_24" x="-1" y="0" width="24" height="24"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_24" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_24"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div @click="blockEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="24" viewBox="0 0 22 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_6_234)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M11 15.75C14.7279 15.75 17.75 12.7279 17.75 9C17.75 5.27208 14.7279 2.25 11 2.25C7.27208 2.25 4.25 5.27208 4.25 9C4.25 12.7279 7.27208 15.75 11 15.75ZM7.25 10H14.75V8H7.25V10Z"
+                                        fill="white" fill-opacity="0.88" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_6_234" x="-2" y="0" width="26" height="26"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_6_234" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6_234"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                    </div>
+                </li>
+            </div>
+        </div>
+
+        <div class="block-events-bg">
+            <div class="event-logger-logo">
+                <svg class="event-logger-logo-img" width="26" height="30" viewBox="0 0 26 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_1_32)">
+                        <path
+                            d="M7 12H19C20.6569 12 22 10.6569 22 9C22 7.34315 20.6569 6 19 6C18.36 6 17.826 5.53873 17.5639 4.95481C16.7822 3.21307 15.0328 2 13 2C10.9672 2 9.21776 3.21307 8.43606 4.95481C8.17399 5.53873 7.64004 6 7 6C5.34315 6 4 7.34315 4 9C4 10.6569 5.34315 12 7 12Z"
+                            fill="white" fill-opacity="0.76" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M11.2352 14L10.7729 14.786C9.98586 16.124 9.59233 16.793 9.88032 17.2965C10.1683 17.8 10.9454 17.8 12.4996 17.8C12.7355 17.8 12.8535 17.8 12.9267 17.8732C13 17.9464 13 18.0643 13 18.3V20.1638C13 20.9032 13 21.2729 13.1843 21.3231C13.3686 21.3733 13.556 21.0547 13.9309 20.4174L15.227 18.214C16.014 16.876 16.4076 16.207 16.1196 15.7035C15.8316 15.2 15.0545 15.2 13.5003 15.2C13.2644 15.2 13.1464 15.2 13.0732 15.1268C13 15.0536 13 14.9357 13 14.7V14H11.2352Z"
+                            fill="white" fill-opacity="0.76" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_1_32" x="-3" y="0" width="32" height="32" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_32" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_32" result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+                <span class="event-logger-logo-text">Blocked Events</span>
+            </div>
+
+            <div class="events-box" v-bind:style="{ 'max-height': 200, 'overflow-y': 'auto' }">
+                <li class="event-logger-eventslist" v-for="(event, index) in blocked_events">
+                    <div class="event-logger-event-bg">
+                        <svg class="event-logger-event-logo" width="28" height="27" viewBox="0 0 28 27" fill="none"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <g filter="url(#filter0_d_1_28)">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M10.2899 10C11.1504 7.10851 13.829 5 17 5C20.866 5 24 8.13401 24 12C24 15.866 20.866 19 17 19H8.5C6.01472 19 4 16.9853 4 14.5C4 12.0147 6.01472 10 8.5 10H10.2899Z"
+                                    fill="white" fill-opacity="0.75" />
+                            </g>
+                            <defs>
+                                <filter id="filter0_d_1_28" x="-2" y="0" width="32" height="32"
+                                    filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                    <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                    <feColorMatrix in="SourceAlpha" type="matrix"
+                                        values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                    <feOffset dy="4" />
+                                    <feGaussianBlur stdDeviation="2" />
+                                    <feComposite in2="hardAlpha" operator="out" />
+                                    <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_28" />
+                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_28"
+                                        result="shape" />
+                                </filter>
+                            </defs>
+                        </svg>
+                        <span class="event-logger-event-text">callRemote('{{event.name}}'{{event.args.length > 0 ? ',' : ''}}
+                            {{addQuotes(event.args).join(', ')}})</span>
+                        <div @click="copyEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="20" viewBox="0 0 22 20" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_1_24)">
+                                    <path
+                                        d="M9.66667 10.6667H7.66667C6.19391 10.6667 5 9.47277 5 8.00001V8.00001C5 6.52725 6.19391 5.33334 7.66667 5.33334H9.66667"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                    <path d="M13.6667 8H8.33333" stroke="white" stroke-opacity="0.89" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                    <path
+                                        d="M12.3333 10.6667H14.3333C15.8061 10.6667 17 9.47277 17 8.00001V8.00001C17 6.52725 15.8061 5.33334 14.3333 5.33334H12.3333"
+                                        stroke="white" stroke-opacity="0.89" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_1_24" x="-1" y="0" width="24" height="24"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_1_24" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_24"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div @click="blockEvent(event)" class="event-btn-bg">
+                            <svg width="22" height="24" viewBox="0 0 22 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g filter="url(#filter0_d_6_234)">
+                                    <path fill-rule="evenodd" clip-rule="evenodd"
+                                        d="M11 15.75C14.7279 15.75 17.75 12.7279 17.75 9C17.75 5.27208 14.7279 2.25 11 2.25C7.27208 2.25 4.25 5.27208 4.25 9C4.25 12.7279 7.27208 15.75 11 15.75ZM7.25 10H14.75V8H7.25V10Z"
+                                        fill="white" fill-opacity="0.88" />
+                                </g>
+                                <defs>
+                                    <filter id="filter0_d_6_234" x="-2" y="0" width="26" height="26"
+                                        filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                        <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                                        <feColorMatrix in="SourceAlpha" type="matrix"
+                                            values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                                        <feOffset dy="4" />
+                                        <feGaussianBlur stdDeviation="2" />
+                                        <feComposite in2="hardAlpha" operator="out" />
+                                        <feColorMatrix type="matrix"
+                                            values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                                        <feBlend mode="normal" in2="BackgroundImageFix"
+                                            result="effect1_dropShadow_6_234" />
+                                        <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_6_234"
+                                            result="shape" />
+                                    </filter>
+                                </defs>
+                            </svg>
+
+                        </div>
+                    </div>
+                </li>
+            </div>
+        </div>
+
+        <div class="eval-bg">
+            <div class="event-logger-logo">
+                <svg class="event-logger-logo-img" width="26" height="30" viewBox="0 0 26 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_1_32)">
+                        <path
+                            d="M7 12H19C20.6569 12 22 10.6569 22 9C22 7.34315 20.6569 6 19 6C18.36 6 17.826 5.53873 17.5639 4.95481C16.7822 3.21307 15.0328 2 13 2C10.9672 2 9.21776 3.21307 8.43606 4.95481C8.17399 5.53873 7.64004 6 7 6C5.34315 6 4 7.34315 4 9C4 10.6569 5.34315 12 7 12Z"
+                            fill="white" fill-opacity="0.76" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M11.2352 14L10.7729 14.786C9.98586 16.124 9.59233 16.793 9.88032 17.2965C10.1683 17.8 10.9454 17.8 12.4996 17.8C12.7355 17.8 12.8535 17.8 12.9267 17.8732C13 17.9464 13 18.0643 13 18.3V20.1638C13 20.9032 13 21.2729 13.1843 21.3231C13.3686 21.3733 13.556 21.0547 13.9309 20.4174L15.227 18.214C16.014 16.876 16.4076 16.207 16.1196 15.7035C15.8316 15.2 15.0545 15.2 13.5003 15.2C13.2644 15.2 13.1464 15.2 13.0732 15.1268C13 15.0536 13 14.9357 13 14.7V14H11.2352Z"
+                            fill="white" fill-opacity="0.76" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_1_32" x="-3" y="0" width="32" height="32" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_32" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_32" result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+                <span class="event-logger-logo-text">Execute results</span>
+            </div>
+            <textarea v-model="eval_result" class="executor-input"></textarea>
+            <div @click="clearEval" class="execute-btn">
+                <span class="execute-text">Clear</span>
+            </div>
+        </div>
+
+        <div class="executor-bg">
+            <div class="event-logger-logo">
+                <svg class="event-logger-logo-img" width="26" height="30" viewBox="0 0 26 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <g filter="url(#filter0_d_1_32)">
+                        <path
+                            d="M7 12H19C20.6569 12 22 10.6569 22 9C22 7.34315 20.6569 6 19 6C18.36 6 17.826 5.53873 17.5639 4.95481C16.7822 3.21307 15.0328 2 13 2C10.9672 2 9.21776 3.21307 8.43606 4.95481C8.17399 5.53873 7.64004 6 7 6C5.34315 6 4 7.34315 4 9C4 10.6569 5.34315 12 7 12Z"
+                            fill="white" fill-opacity="0.76" />
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M11.2352 14L10.7729 14.786C9.98586 16.124 9.59233 16.793 9.88032 17.2965C10.1683 17.8 10.9454 17.8 12.4996 17.8C12.7355 17.8 12.8535 17.8 12.9267 17.8732C13 17.9464 13 18.0643 13 18.3V20.1638C13 20.9032 13 21.2729 13.1843 21.3231C13.3686 21.3733 13.556 21.0547 13.9309 20.4174L15.227 18.214C16.014 16.876 16.4076 16.207 16.1196 15.7035C15.8316 15.2 15.0545 15.2 13.5003 15.2C13.2644 15.2 13.1464 15.2 13.0732 15.1268C13 15.0536 13 14.9357 13 14.7V14H11.2352Z"
+                            fill="white" fill-opacity="0.76" />
+                    </g>
+                    <defs>
+                        <filter id="filter0_d_1_32" x="-3" y="0" width="32" height="32" filterUnits="userSpaceOnUse"
+                            color-interpolation-filters="sRGB">
+                            <feFlood flood-opacity="0" result="BackgroundImageFix" />
+                            <feColorMatrix in="SourceAlpha" type="matrix"
+                                values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
+                            <feOffset dy="4" />
+                            <feGaussianBlur stdDeviation="2" />
+                            <feComposite in2="hardAlpha" operator="out" />
+                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.25 0" />
+                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_32" />
+                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_32" result="shape" />
+                        </filter>
+                    </defs>
+                </svg>
+                <span class="event-logger-logo-text">Executor</span>
+            </div>
+            <textarea v-model="execute_code" class="executor-input"></textarea>
+            <div @click="executeCode" class="execute-btn">
+                <span class="execute-text">Execute</span>
+            </div>
+        </div>
+    </div>
+    <script src="./assets/js/index.js"></script>
+</body>
+
+</html>
